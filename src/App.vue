@@ -3,18 +3,32 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/login.do">Login</router-link>
+      <router-link v-if="!hasToken" to="/login.do">Login</router-link>
+      <a v-if="hasToken" @click="logout">Logout</a>
     </nav>
     <router-view />
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   created() {
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(process.env.VUE_APP_KAKAO_JS_KEY);
       window.Kakao.isInitialized();
+      console.log(this.hasToken);
+      console.log("Kakao API is good to go");
     }
+  },
+  methods: {
+    ...mapActions({ initUser: "user/initUser" }),
+    logout() {
+      window.Kakao.Auth.logout();
+      this.initUser();
+    },
+  },
+  computed: {
+    ...mapGetters({ hasToken: "user/hasToken" }),
   },
 };
 </script>

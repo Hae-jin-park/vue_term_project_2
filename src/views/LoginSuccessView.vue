@@ -4,10 +4,16 @@
       <img :src="img" alt="프로필 사진 이미지" />
     </p>
     <p>닉네임 : {{ nickName }}</p>
+    <button
+      class="w-1/2 mx-auto text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+    >
+      Go To Main Page
+    </button>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import axios from "axios";
 
 export default {
@@ -19,6 +25,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("user", ["setToken", "setName", "setId"]),
     async getToken() {
       const code = this.$route.query.code;
       const client_id = process.env.VUE_APP_KAKAO_REST_KEY;
@@ -35,6 +42,7 @@ export default {
         },
       });
 
+      this.setToken(response.data.access_token);
       window.Kakao.Auth.setAccessToken(response.data.access_token);
     },
 
@@ -46,16 +54,24 @@ export default {
           console.log(response);
           this.nickName = response.properties.nickname;
           this.img = response.properties.profile_image;
+          this.setName(response.properties.nickname);
+          this.setId(response.id);
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    goToMainPage() {
+      this.$router.push({ name: "hidden" });
     },
   },
 
   async created() {
     await this.getToken();
     await this.getUserInfo();
+    setTimeout(() => {
+      this.goToHiddenPage();
+    }, 5000);
   },
 };
 </script>
