@@ -1,11 +1,11 @@
 import Vue from "vue";
 import App from "./App.vue";
-import "./index.css";
+import "./output.css";
 import "flowbite";
-import router from './router'
+import router from "./router";
 Vue.config.productionTip = false;
 
 new Vue({
   router,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

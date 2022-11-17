@@ -2,12 +2,22 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">About</router-link> |
+      <router-link to="/login.do">Login</router-link>
     </nav>
-    <router-view/>
+    <router-view />
   </div>
 </template>
-
+<script>
+export default {
+  created() {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.VUE_APP_KAKAO_JS_KEY);
+      window.Kakao.isInitialized();
+    }
+  },
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
