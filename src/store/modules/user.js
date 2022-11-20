@@ -7,6 +7,7 @@ export default {
       id: sessionStorage.getItem("user-id"),
       name: sessionStorage.getItem("user-name"),
       email: sessionStorage.getItem("user-email"),
+      thumbnail: sessionStorage.getItem("user-thumbnail"),
     },
   },
 
@@ -24,7 +25,11 @@ export default {
     },
 
     email(state) {
-      return state.email;
+      return state.user.email;
+    },
+
+    thumbnail(state) {
+      return state.user.thumbnail;
     },
 
     hasToken(state) {
@@ -44,13 +49,18 @@ export default {
     },
 
     setId(state, id) {
-      state.id = id;
+      state.user.id = id;
       sessionStorage.setItem("user-id", id);
     },
 
     setEmail(state, email) {
-      state.email = email;
+      state.user.email = email;
       sessionStorage.setItem("user-email", email);
+    },
+
+    setThumbnail(state, thumbnail) {
+      state.user.thumbnail = thumbnail;
+      sessionStorage.setItem("user-thumbnail", thumbnail);
     },
   },
 
@@ -71,11 +81,16 @@ export default {
       commit("setEmail", email);
     },
 
+    setThumbnail({ commit }, thumbnail) {
+      commit("setThumbnail", thumbnail);
+    },
+
     initUser({ commit }) {
       commit("setId", "");
       commit("setName", "");
       commit("setEmail", "");
       commit("setToken", "");
+      commit("setThumbnail", "");
     },
   },
 };

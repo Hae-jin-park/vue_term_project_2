@@ -1,8 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import KakaoSuccessView from "../views/LoginSuccessView.vue";
-import LoginView from "../views/LoginView.vue";
+// import KakaoSuccessView from "../views/LoginSuccessView.vue";
+import ContentView from "../views/layout/MainView.vue";
+import LoginView from "../views/login/LoginView.vue";
+import ShowPostView from "../views/BlogCRUD/ShowPostView.vue";
 
 Vue.use(VueRouter);
 
@@ -22,14 +24,41 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
-    path: "/KakaoSuccess.do",
-    name: "kakaoSuccess",
-    component: KakaoSuccessView,
-  },
-  {
     path: "/login.do",
     name: "login",
     component: LoginView,
+  },
+  {
+    path: "/main.do",
+    name: "main",
+    component: ContentView,
+  },
+  {
+    path: "/post/:bno",
+    name: "postDetail",
+    component: ShowPostView,
+  },
+  {
+    path: "/post.do",
+    name: "newPost",
+    component: () =>
+      import(
+        /* webpackChunkName: 'newPost' */ "../views/BlogCRUD/ControlPostView.vue"
+      ),
+  },
+  {
+    path: "/post.do/:id",
+    name: "updatePost",
+    component: () =>
+      import(
+        /* webpackChunkName: 'updatePost' */ "../views/BlogCRUD/ControlPostView.vue"
+      ),
+  },
+  {
+    path: "/map.do",
+    name: "map",
+    component: () =>
+      import(/* webpackChunkName: 'map' */ "../views/MapView.vue"),
   },
 ];
 

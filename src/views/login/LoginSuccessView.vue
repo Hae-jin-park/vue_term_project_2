@@ -41,6 +41,7 @@ export default {
           code,
         },
       });
+      console.log(response);
 
       this.setToken(response.data.access_token);
       window.Kakao.Auth.setAccessToken(response.data.access_token);
@@ -61,17 +62,12 @@ export default {
           console.log(error);
         });
     },
-    goToMainPage() {
-      this.$router.push({ name: "hidden" });
-    },
   },
 
   async created() {
     await this.getToken();
     await this.getUserInfo();
-    setTimeout(() => {
-      this.goToHiddenPage();
-    }, 5000);
+    this.$router.push("/main.do");
   },
 };
 </script>

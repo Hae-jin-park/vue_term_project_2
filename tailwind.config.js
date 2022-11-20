@@ -4,6 +4,7 @@ module.exports = {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     "./node_modules/flowbite/**/*.js",
+    "./node_modules/tw-elements/dist/js/**/*.js",
   ],
   theme: {
     extend: {
@@ -59,5 +60,10 @@ module.exports = {
       ],
     },
   },
-  plugins: [require("flowbite-typography"), require("flowbite/plugin")],
+  plugins: [
+    require("flowbite-typography"),
+    require("flowbite/plugin"),
+    require("tw-elements/dist/plugin"),
+    require("@tailwindcss/typography"),
+  ],
 };

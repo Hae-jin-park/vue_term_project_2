@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import SignUpComponent from "../components/SignUpComponent.vue";
+import SignUpComponent from "@/components/SignUpComponent.vue";
 export default {
   data() {
     return {
