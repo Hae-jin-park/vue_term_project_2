@@ -3,7 +3,7 @@ import axios from "axios";
 
 const instance = axios.create({
   //   baseURL: "https://api.devcury.kr/",
-  baseURL: "http://localhost:3000/",
+  baseURL: process.env.VUE_APP_BACK_SERVER_URL,
 });
 
 export const callApi = async (url, config) => {

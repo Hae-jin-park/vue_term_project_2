@@ -42,6 +42,7 @@
       ref="toastEditor"
       initialEditType="wysiwyg"
       :style="{ width: '100%' }"
+      :options="options"
       height="500px"
       class="bg-white rounded-md border-2 border-emerald-600 my-4"
       previewStyle="vertical"
@@ -104,13 +105,72 @@ import {
 } from "@/service/blog";
 import { getCat } from "@/service/category";
 import { mapGetters } from "vuex";
+import axios from "axios";
 export default {
   data() {
+    // 이미지 툴바 버튼 생성
+    let imageToolBar = () => {
+      // javascript 코드를 통해 File Input을 생성한다.
+      const file = document.createElement("input");
+      file.setAttribute("type", "file");
+      file.style.display = "none";
+      file.accept = "image/png, image/gif, image/jpeg";
+
+      // 파일 업로드시 진행 되는 이벤트 이다.
+      file.addEventListener("change", async (value) => {
+        let file = value.target.files[0];
+        this.handleImage(file);
+        console.log(file);
+        // console.log(data);
+        // if (files.length > 0) {
+        //   await this.fileUpload(files);
+        //   console.log(files);
+        // }
+      });
+
+      // 버튼을 생성한다.
+      const button = document.createElement("button");
+
+      button.className = "toastui-editor-toolbar-icons";
+      button.setAttribute("type", "button");
+      button.style.backgroundImage = "none";
+      button.style.margin = "0";
+      // 버튼 코드는 Icon을 사용하기 위해 그냥 간단한 코드로 작성하였다.
+      button.innerHTML = `<i aria-hidden="true" file="v-icon/usage" class="v-icon notranslate mdi mdi-file-image theme--light"></i>`;
+      // 버튼 안에 File Input을 넣습니다.
+      button.appendChild(file);
+      // 버튼을 클릭하면 file (상단의 const file입니다.)
+      // input:type=file 인 input이 클릭 되는 이벤트를 설정합니다.
+      // button click 은 input:type=file click 이벤트와 같다.
+      button.addEventListener("click", () => {
+        file.click();
+      });
+      // 이후에 element를 Return한다.
+      return {
+        el: button,
+        tooltip: "Image Upload",
+      };
+    };
     return {
       title: "",
       contents: "",
       category: 0,
       cat_list: [],
+      image: "",
+      originalImgName: "",
+      options: {
+        minHeight: "1500px",
+        hideModeSwitch: true,
+        toolbarItems: [
+          ["heading", "bold", "italic", "strike"],
+          ["hr", "quote"],
+          ["ul", "ol", "task", "indent", "outdent"],
+          ["table", "link"],
+          ["code", "codeblock"],
+          // Custom한 Image Tool Bar를 추가한다.
+          [imageToolBar()],
+        ],
+      },
     };
   },
   components: {
@@ -148,6 +208,34 @@ export default {
 
     setContent(content) {
       this.$refs.toastEditor.invoke("setMarkdown", content);
+    },
+
+    handleImage(fileName) {
+      const file = fileName;
+      const reader = new FileReader();
+      console.log(file);
+      var rawImg;
+      reader.onloadend = () => {
+        console.log("reader : ", reader);
+        rawImg = reader.result;
+        //console.log(rawImg);
+        this.image = rawImg;
+        this.originalImgName = file.name.split(".")[0];
+        this.uploadImg();
+      };
+      reader.readAsDataURL(file);
+    },
+    uploadImg() {
+      const { image, originalImgName } = this;
+      axios
+        .post("http://118.42.241.204:3000/upload", { image, originalImgName })
+        .then((response) => {
+          console.log(response.data);
+          this.remoteUrl = response.data.url;
+        })
+        .catch((err) => {
+          return new Error(err.message);
+        });
     },
     async getDetail() {
       try {
@@ -195,6 +283,28 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    // 파일을 실질적인 API를 통하여 전송한다.
+    async fileUpload(file) {
+      if (!file) {
+        alert("File Is Null");
+        return;
+      }
+
+      let formData = new FormData();
+      formData.set("img", file);
+      console.log(formData);
+      // await uploadFile(formData)
+      //   .then((data) => {
+      //     console.log(data);
+      //     // image tag를 구성하여
+      //     let img = `<img src="${data.path}" alt="${data.name}"/>`;
+      //     // Editor에 Invoke 하면 이미지가 HTML 코드로 생성 됩니다.
+      //     this.$refs.editor.invoke("insertText", img);
+      //   })
+      //   .catch((error) => {
+      //     alert("Error : " + error);
+      //   });
     },
   },
   computed: {
